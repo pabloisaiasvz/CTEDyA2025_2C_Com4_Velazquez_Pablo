@@ -1,0 +1,17 @@
+# Archivos binarios
+bin/
+obj/
+
+# Configuración de Visual Studio
+.vs/
+*.user
+*.suo
+*.vscode/
+
+# Archivos de build
+*.exe
+*.dll
+*.pdb
+
+# Paquetes NuGet
+packages/
