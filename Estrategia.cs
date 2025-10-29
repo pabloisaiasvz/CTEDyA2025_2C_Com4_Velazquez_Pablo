@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using tp1;
 
 namespace tpfinal
@@ -27,25 +28,96 @@ namespace tpfinal
 
         public String Consulta1(ArbolGeneral<DatoDistancia> arbol)
         {
-            string resutl = "Implementar";
+            string resutl = "";
+            if (arbol.esHoja()) // Si fuera hoja retorno su texto, el cual seria agregado a resutl
+            {
+                return arbol.getDatoRaiz().texto + "\n"; // La forma "\n" indica un salto de linea
+            }
+            else
+            {
+                foreach (ArbolGeneral<DatoDistancia> listaHijos in arbol.getHijos())
+                {
+                    resutl += Consulta1(listaHijos); // Se agrega a resutl los textos de los hijos
+                }
+            }
             return resutl;
         }
 
 
-        public String Consulta2(ArbolGeneral<DatoDistancia> arbol)
+        public string Consulta2(ArbolGeneral<DatoDistancia> arbol)
         {
-            string result = "Implementar";
+            List<string> caminos = new List<string>(); // Lista donde se almacenarán todos los caminos posibles
+            ExploradorCaminos(arbol, "", caminos); // Llena la lista "caminos" con los caminos
+            string resultado = "";
+            foreach (string camino in caminos)
+            { // Cada "camino" es el conjunto de recorridos hasta una hoja 
+                resultado += camino + "\n"; // Agrega el camino al resultado y hace un salto de línea
+            }
+            return resultado; // Devuelve el resultado final
+        }
 
-            return result;
+        private void ExploradorCaminos(ArbolGeneral<DatoDistancia> arbol, string caminoActual, List<string> caminos)
+        {
+            caminoActual += " --> " + arbol.getDatoRaiz().ToString(); // Agrega el texto del nodo actual al camino actual
+            if (arbol.esHoja()) // Si el nodo actual es una hoja, se ha alcanzado el final del camino
+            {
+                caminos.Add(caminoActual); // Agrega el camino actual a la lista de caminos
+                return; // Termina y vuelve a la recursión anterior
+            }
+            foreach (ArbolGeneral<DatoDistancia> hijo in arbol.getHijos()) // Itera sobre los hijos del nodo actual
+            {
+                ExploradorCaminos(hijo, caminoActual, caminos); // Llama recursivamente al explorador para cada hijo
+            }
         }
 
 
 
         public String Consulta3(ArbolGeneral<DatoDistancia> arbol)
         {
-            string result = "Implementar";
+            // Creamos un diccionario donde la clave es el número de nivel (int) 
+            // y el valor es una lista de strings con los textos de todos los nodos de ese nivel
+            Dictionary<int, List<string>> nodosPorNivel = new Dictionary<int, List<string>>();
 
-            return result;
+            // Llamamos al método que recorre el árbol y llena el diccionario
+            // Empezamos desde el nivel 0 (la raíz del árbol)
+            RecorrerPorNiveles(arbol, 0, nodosPorNivel);
+
+            // Variable para almacenar el resultado final que vamos a retornar
+            string resultado = "";
+
+            // Recorremos cada nivel almacenado en el diccionario
+            foreach (int nivel in nodosPorNivel.Keys)
+            {
+                // Para cada nivel, agregamos al resultado una línea con formato:
+                // "Nivel X: nodo1, nodo2, nodo3"
+                // string.Join une todos los elementos de la lista separándolos con ", "
+                resultado += "Nivel " + nivel + ": " + string.Join(", ", nodosPorNivel[nivel]) + "\n";
+            }
+
+            return resultado;
+        }
+
+        private void RecorrerPorNiveles(ArbolGeneral<DatoDistancia> nodo, int nivelActual, Dictionary<int, List<string>> nodosPorNivel)
+        {
+            if (nodo == null) return;
+
+            // Verificamos si ya existe una lista para este nivel en el diccionario, si no existe, la creamos
+            if (!nodosPorNivel.ContainsKey(nivelActual))
+            {
+                nodosPorNivel[nivelActual] = new List<string>(); // Creamos una lista vacía para este nivel
+            }
+
+            // Agregamos el texto del nodo actual a la lista de su nivel correspondiente
+            // Usamos ToString() para obtener la representación en texto del dato
+            nodosPorNivel[nivelActual].Add(nodo.getDatoRaiz().ToString());
+
+            // Recorremos todos los hijos del nodo actual
+            foreach (var hijo in nodo.getHijos())
+            {
+                // Llamamos recursivamente al método para cada hijo
+                // Oncrementamos el nivel en 1 porque los hijos están un nivel más abajo
+                RecorrerPorNiveles(hijo, nivelActual + 1, nodosPorNivel);
+            }
         }
 
         public void AgregarDato(ArbolGeneral<DatoDistancia> arbol, DatoDistancia dato)

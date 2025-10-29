@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tpfinal", "tpfinal.csproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución", "Elementos de la solución", "{43EE7F02-3380-4D48-ADA0-2778630B9FAB}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		Class1.cs = Class1.cs
 	EndProjectSection
 EndProject
